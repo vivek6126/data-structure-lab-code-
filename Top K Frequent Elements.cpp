@@ -1,27 +1,32 @@
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+using namespace std;
+
 class Solution {
 public:
-     std::vector<int> topKFrequent(const std::vector<int>& nums, int k) {
-        std::unordered_map<int, int> freq_map;
-        
+    vector<int> topKFrequent(const vector<int>& nums, int k) {
+        unordered_map<int, int> freq;
+
+        // Count the frequency of each number
         for (int num : nums) {
-            ++freq_map[num];
+            freq[num]++;
         }
 
-        std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<>> min_heap;
-        
-        for (const auto& [num, freq] : freq_map) {
-            min_heap.emplace(freq, num);
-            if (min_heap.size() > k) {
-                min_heap.pop(); 
-            }
+        // Move map entries into a vector of pairs
+        vector<pair<int, int>> freqVec(freq.begin(), freq.end());
+
+        // Sort the vector in descending order of frequency
+        sort(freqVec.begin(), freqVec.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
+            return b.second > a.second;
+        });
+
+        // Collect the top k frequent elements
+        vector<int> result;
+        for (int i = 0; i < k; ++i) {
+            result.push_back(freqVec[i].first);
         }
 
-       
-        std::vector<int> result;
-        while (!min_heap.empty()) {
-            result.push_back(min_heap.top().second);
-            min_heap.pop();
-        }
         return result;
     }
 };
